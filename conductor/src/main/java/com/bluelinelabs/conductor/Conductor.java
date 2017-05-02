@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.internal.LifecycleHandler;
@@ -33,7 +34,11 @@ public final class Conductor {
     public static Router attachRouter(@NonNull Activity activity, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
         ThreadUtils.ensureMainThread();
 
-        LifecycleHandler lifecycleHandler = LifecycleHandler.install(activity);
+        if (!(activity instanceof FragmentActivity)) {
+            throw new RuntimeException("Activity must extend FragmentActivity");
+        }
+
+        LifecycleHandler lifecycleHandler = LifecycleHandler.install((FragmentActivity) activity);
 
         Router router = lifecycleHandler.getRouter(container, savedInstanceState);
         router.rebindIfNeeded();

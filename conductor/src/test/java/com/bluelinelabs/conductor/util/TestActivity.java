@@ -1,8 +1,8 @@
 package com.bluelinelabs.conductor.util;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
-public class TestActivity extends Activity {
+public class TestActivity extends FragmentActivity {
 
     public boolean isChangingConfigurations = false;
     public boolean isDestroying = false;
