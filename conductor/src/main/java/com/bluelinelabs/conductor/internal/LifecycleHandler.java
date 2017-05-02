@@ -3,7 +3,6 @@ package com.bluelinelabs.conductor.internal;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application.ActivityLifecycleCallbacks;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -13,6 +12,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,8 +54,8 @@ public class LifecycleHandler extends Fragment implements ActivityLifecycleCallb
     }
 
     @Nullable
-    private static LifecycleHandler findInActivity(@NonNull Activity activity) {
-        LifecycleHandler lifecycleHandler = (LifecycleHandler)activity.getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+    private static LifecycleHandler findInActivity(@NonNull FragmentActivity activity) {
+        LifecycleHandler lifecycleHandler = (LifecycleHandler)activity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
         if (lifecycleHandler != null) {
             lifecycleHandler.registerActivityListener(activity);
         }
@@ -62,11 +63,11 @@ public class LifecycleHandler extends Fragment implements ActivityLifecycleCallb
     }
 
     @NonNull
-    public static LifecycleHandler install(@NonNull Activity activity) {
+    public static LifecycleHandler install(@NonNull FragmentActivity activity) {
         LifecycleHandler lifecycleHandler = findInActivity(activity);
         if (lifecycleHandler == null) {
             lifecycleHandler = new LifecycleHandler();
-            activity.getFragmentManager().beginTransaction().add(lifecycleHandler, FRAGMENT_TAG).commit();
+            activity.getSupportFragmentManager().beginTransaction().add(lifecycleHandler, FRAGMENT_TAG).commit();
         }
         lifecycleHandler.registerActivityListener(activity);
         return lifecycleHandler;
@@ -304,7 +305,7 @@ public class LifecycleHandler extends Fragment implements ActivityLifecycleCallb
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        if (this.activity == null && findInActivity(activity) == LifecycleHandler.this) {
+        if (this.activity == null && activity instanceof FragmentActivity && findInActivity((FragmentActivity) activity) == LifecycleHandler.this) {
             this.activity = activity;
         }
     }

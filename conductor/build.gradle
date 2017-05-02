@@ -37,6 +37,7 @@ dependencies {
     testCompile rootProject.ext.roboelectric
 
     compile rootProject.ext.supportAnnotations
+    compile rootProject.ext.supportV4
 
     lintChecks project(path: ':conductor-lint', configuration: 'lintChecks')
 }
